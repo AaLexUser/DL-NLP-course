@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+# Exclude non-package directories from auto-discovery
+exclude = ["HW*", "data*", "notebooks*", "dl.egg-info*", "*.egg-info"]
+
+[project]
+name = "dl-nlp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "N", "UP"]
+# Ignore ML/sklearn naming conventions (X, y, X_train, etc.)
+ignore = ["N803", "N806", "N816", "N812"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pandas-stubs>=2.3.2.250926",
+    "pre-commit>=4.3.0",
+    "ruff>=0.14.3",
+    "ipykernel>=7.1.0",
+    "ipywidgets>=8.1.8",
+]
