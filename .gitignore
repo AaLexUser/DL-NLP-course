@@ -47,6 +47,7 @@ coverage.xml
 .cursor/
 .claude/
 .agents/
+.codex/
 skills-lock.json
 CLAUDE.md
 AGENTS.md
