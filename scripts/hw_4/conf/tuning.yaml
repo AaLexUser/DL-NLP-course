@@ -1,0 +1,132 @@
+# Phase 3: Baseline-anchored hyperparameter tuning
+# Every group is evaluated against the frozen finalist baseline. The baseline itself
+# is included in each group so the search can correctly conclude that no change helps.
+
+tuning_groups:
+  - name: clustering_kmeans_size
+    description: "Tune k for MiniBatchKMeans finalists without changing clustering family"
+    parameter: clustering
+    apply_if:
+      clustering_type: kmeans
+    variants:
+      - key: kmeans_15
+        config: {type: kmeans, n_clusters: 15, batch_size: 1024, n_init: auto}
+      - key: kmeans_20
+        config: {type: kmeans, n_clusters: 20, batch_size: 1024, n_init: auto}
+      - key: kmeans_25
+        config: {type: kmeans, n_clusters: 25, batch_size: 1024, n_init: auto}
+      - key: kmeans_30
+        config: {type: kmeans, n_clusters: 30, batch_size: 1024, n_init: auto}
+      - key: kmeans_35
+        config: {type: kmeans, n_clusters: 35, batch_size: 1024, n_init: auto}
+      - key: kmeans_40
+        config: {type: kmeans, n_clusters: 40, batch_size: 1024, n_init: auto}
+
+  - name: clustering_hdbscan_size
+    description: "Tune min_cluster_size for HDBSCAN finalists (min_samples=5 throughout)"
+    parameter: clustering
+    apply_if:
+      clustering_type: hdbscan
+    variants:
+      - key: hdbscan_5
+        config: {type: hdbscan, min_cluster_size: 5, min_samples: 5}
+      - key: hdbscan_10
+        config: {type: hdbscan, min_cluster_size: 10, min_samples: 5}
+      - key: hdbscan_25
+        config: {type: hdbscan, min_cluster_size: 25, min_samples: 5}
+      - key: hdbscan_50
+        config: {type: hdbscan, min_cluster_size: 50, min_samples: 5}
+      - key: hdbscan_75
+        config: {type: hdbscan, min_cluster_size: 75, min_samples: 5}
+
+  - name: umap_params
+    description: "Tune UMAP geometry when the finalist already uses UMAP"
+    parameter: dim_reduction
+    apply_if:
+      dim_reduction_type: umap
+    variants:
+      - key: umap_nn15_c5
+        config: {type: umap, n_neighbors: 15, n_components: 5, min_dist: 0.0, metric: cosine}
+      - key: umap_nn20_c5
+        config: {type: umap, n_neighbors: 20, n_components: 5, min_dist: 0.0, metric: cosine}
+      - key: umap_nn30_c5
+        config: {type: umap, n_neighbors: 30, n_components: 5, min_dist: 0.0, metric: cosine}
+      - key: umap_nn50_c5
+        config: {type: umap, n_neighbors: 50, n_components: 5, min_dist: 0.0, metric: cosine}
+      - key: umap_nn30_c2
+        config: {type: umap, n_neighbors: 30, n_components: 2, min_dist: 0.0, metric: cosine}
+      - key: umap_nn30_c10
+        config: {type: umap, n_neighbors: 30, n_components: 10, min_dist: 0.0, metric: cosine}
+
+  - name: pca_components
+    description: "Tune PCA dimensionality when the finalist already uses PCA"
+    parameter: dim_reduction
+    apply_if:
+      dim_reduction_type: pca
+    variants:
+      - key: pca_5
+        config: {type: pca, n_components: 5}
+      - key: pca_10
+        config: {type: pca, n_components: 10}
+      - key: pca_20
+        config: {type: pca, n_components: 20}
+
+  - name: svd_n_components
+    description: "Tune TF-IDF+SVD dimensionality only for the lexical encoder family"
+    parameter: encoder
+    apply_if:
+      encoder_type: tfidf_svd
+    variants:
+      - key: tfidf_svd_128
+        config:
+          type: tfidf_svd
+          n_components: 128
+          tfidf_ngram_range: [1, 2]
+          tfidf_min_df: 5
+          tfidf_max_df: 0.8
+          tfidf_max_features: 50000
+          tfidf_sublinear_tf: true
+      - key: tfidf_svd_256
+        config:
+          type: tfidf_svd
+          n_components: 256
+          tfidf_ngram_range: [1, 2]
+          tfidf_min_df: 5
+          tfidf_max_df: 0.8
+          tfidf_max_features: 50000
+          tfidf_sublinear_tf: true
+      - key: tfidf_svd_384
+        config:
+          type: tfidf_svd
+          n_components: 384
+          tfidf_ngram_range: [1, 2]
+          tfidf_min_df: 5
+          tfidf_max_df: 0.8
+          tfidf_max_features: 50000
+          tfidf_sublinear_tf: true
+
+  - name: vectorizer_params
+    description: "Tune CountVectorizer thresholds around the finalist baseline"
+    parameter: vectorizer
+    variants:
+      - key: uni_df1_max95
+        config: {ngram_range: [1, 1], min_df: 1, max_df: 0.95}
+      - key: uni_df2_max95
+        config: {ngram_range: [1, 1], min_df: 2, max_df: 0.95}
+      - key: uni_df5_max95
+        config: {ngram_range: [1, 1], min_df: 5, max_df: 0.95}
+      - key: uni_df1_max90
+        config: {ngram_range: [1, 1], min_df: 1, max_df: 0.9}
+      - key: bi_df2_max95
+        config: {ngram_range: [1, 2], min_df: 2, max_df: 0.95}
+
+  - name: ctfidf_reduce_words
+    description: "Tune reduce_frequent_words only for plain c-TF-IDF finalists"
+    parameter: representation
+    apply_if:
+      representation_type: none
+    variants:
+      - key: ctfidf_reduce_true
+        config: {type: none, reduce_frequent_words: true}
+      - key: ctfidf_reduce_false
+        config: {type: none, reduce_frequent_words: false}

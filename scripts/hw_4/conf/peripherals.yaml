@@ -1,0 +1,13 @@
+# Phase 2: Tokenization & Representation
+# Take the top-k structure finalists from Phase 1 and probe the lexical/representation
+# layer on each finalist instead of only on the single global winner.
+
+vectorizer:
+  - unigram
+  - bigram
+
+representation:
+  - ctfidf
+  - ctfidf_no_reduce
+  - keybert
+  - mmr

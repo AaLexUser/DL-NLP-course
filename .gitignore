@@ -68,3 +68,5 @@ checkpoints/
 hw_3_logs/
 data/
 artifacts/
+tmp/
+outputs/

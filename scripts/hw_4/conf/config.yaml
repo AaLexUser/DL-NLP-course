@@ -1,0 +1,120 @@
+seed: 42
+sample_size: 12000
+top_n_words: 10
+target_topic_min: 12
+target_topic_max: 40
+min_coverage: 0.65
+
+score_weights:
+  coherence: 0.5
+  diversity: 0.3
+  coverage: 0.2
+
+# Phase: single | structure | peripherals | tuning | confirm | all
+phase: single
+
+selection:
+  structure_finalists_k: 3
+  peripherals_finalists_k: 3
+  confirmation_finalists_k: 3
+  confirmation_seeds: [13, 42, 77]
+
+paths:
+  results_dir: outputs/bertopic_search
+  embeddings_dir: tmp/bertopic_search/embeddings
+
+# Default component selections.
+embed_text: text_only_light
+vec_text: text_only_light
+encoder: tfidf_svd
+dim_reduction: umap_30
+clustering: kmeans_20
+vectorizer: unigram
+representation: ctfidf
+
+components:
+  encoder:
+    minilm:
+      type: sentence_transformer
+      model_name: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      batch_size: 64
+      device: mps
+    tfidf_svd:
+      type: tfidf_svd
+      n_components: 256
+      tfidf_ngram_range: [1, 2]
+      tfidf_min_df: 5
+      tfidf_max_df: 0.8
+      tfidf_max_features: 50000
+      tfidf_sublinear_tf: true
+    rubert:
+      type: sentence_transformer
+      model_name: DeepPavlov/rubert-base-cased
+      batch_size: 32
+      device: mps
+
+  dim_reduction:
+    umap_15:
+      type: umap
+      n_neighbors: 15
+      n_components: 5
+      min_dist: 0.0
+      metric: cosine
+    umap_30:
+      type: umap
+      n_neighbors: 30
+      n_components: 5
+      min_dist: 0.0
+      metric: cosine
+    pca_10:
+      type: pca
+      n_components: 10
+
+  clustering:
+    kmeans_15:
+      type: kmeans
+      n_clusters: 15
+      batch_size: 1024
+      n_init: auto
+    kmeans_20:
+      type: kmeans
+      n_clusters: 20
+      batch_size: 1024
+      n_init: auto
+    hdbscan_10:
+      type: hdbscan
+      min_cluster_size: 10
+      min_samples: 5
+    hdbscan_25:
+      type: hdbscan
+      min_cluster_size: 25
+      min_samples: 5
+
+  vectorizer:
+    unigram:
+      ngram_range: [1, 1]
+      min_df: 1
+      max_df: 0.95
+    bigram:
+      ngram_range: [1, 2]
+      min_df: 2
+      max_df: 0.95
+
+  representation:
+    ctfidf:
+      type: none
+      reduce_frequent_words: true
+    ctfidf_no_reduce:
+      type: none
+      reduce_frequent_words: false
+    keybert:
+      type: keybert
+      reduce_frequent_words: true
+    mmr:
+      type: mmr
+      reduce_frequent_words: true
+      diversity: 0.3
+
+hydra:
+  job:
+    chdir: false
