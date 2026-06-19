@@ -1,0 +1,36 @@
+# Phase 1: Reduced Grid
+# embed_text x vec_text x encoder x clustering x dim_reduction
+# Fixed: vectorizer=unigram, representation=ctfidf
+# Total: 4 x 4 x 3 x 2 x 4 x 3 = 576 experiments
+
+embed_text:
+  - text_only_light
+  - text_only_lemma
+  - title_text_light
+  - title_text_lemma
+
+vec_text:
+  - text_only_light
+  - text_only_lemma
+  - title_text_light
+  - title_text_lemma
+
+encoder:
+  - minilm
+  - rubert
+  - tfidf_svd
+
+clustering:
+  - kmeans_15
+  - kmeans_20
+  - hdbscan_10
+  - hdbscan_25
+
+dim_reduction:
+  - umap_15
+  - umap_30
+  - pca_10
+
+# Fixed components for Phase 1
+vectorizer: unigram
+representation: ctfidf
